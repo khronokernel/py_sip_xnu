@@ -15,6 +15,8 @@ If module accessed under Yosemite or earlier, `sip_xnu` will treat SIP as disabl
 
 Project currently synced against macOS 13.0 (XNU 8792.41.9). Based off of [pudquick's concept](https://gist.github.com/pudquick/8b320be960e1654b908b10346272326b).
 
+Python validated against 2.7 and 3.9.
+
 ## Background
 
 System Integrity Protection, generally abbreviated as SIP, is a security feature introduced in OS X El Capitan. Primary purpose of this setting was to control access to sensitive operations such as kernel extension loading, protected file write, task tracking, etc. SIP is part of the XNU kernel, and is a cumulation of several kernel flags into the CSR bitmask seen as SIP configuration.

@@ -52,7 +52,7 @@ class sip_xnu:
         OS_MONTEREY = 21
         OS_VENTURA = 22
 
-    class __XNU_SIP_STATUS():
+    class __XNU_SIP_BITMASK():
         CSR_ALLOW_UNTRUSTED_KEXTS = 0x1
         CSR_ALLOW_UNRESTRICTED_FS = 0x2
         CSR_ALLOW_TASK_FOR_PID = 0x4
@@ -224,11 +224,11 @@ class sip_xnu:
             bool: True if SIP allows root filesystem to be edited
         '''
 
-        if self.SIP_STATUS & self.__XNU_SIP_STATUS.CSR_ALLOW_UNRESTRICTED_FS:
+        if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNRESTRICTED_FS:
             if self.XNU_MAJOR < self.__XNU_OS_VERSION.OS_BIG_SUR:
                 return True
 
-            if self.SIP_STATUS & self.__XNU_SIP_STATUS.CSR_ALLOW_UNAUTHENTICATED_ROOT:
+            if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNAUTHENTICATED_ROOT:
                 return True
 
         return False
@@ -241,7 +241,7 @@ class sip_xnu:
             bool: True if SIP allows arbitrary kexts to be loaded
         '''
 
-        if self.SIP_STATUS & self.__XNU_SIP_STATUS.CSR_ALLOW_UNTRUSTED_KEXTS:
+        if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNTRUSTED_KEXTS:
             return True
 
         return False
@@ -254,7 +254,7 @@ class sip_xnu:
             bool: True if SIP allows NVRAM to be written
         '''
 
-        if self.SIP_STATUS & self.__XNU_SIP_STATUS.CSR_ALLOW_UNRESTRICTED_NVRAM:
+        if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNRESTRICTED_NVRAM:
             return True
 
         return False
@@ -265,7 +265,7 @@ class sip_xnu:
         '''
 
         for key, value in self.SIP_DICT.items():
-            for sip_key, sip_value in self.__XNU_SIP_STATUS.__dict__.items():
+            for sip_key, sip_value in self.__XNU_SIP_BITMASK.__dict__.items():
                 if sip_key == key:
                     if self.SIP_STATUS & sip_value:
                         self.SIP_DICT[key] = True

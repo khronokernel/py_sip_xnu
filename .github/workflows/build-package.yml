@@ -15,8 +15,11 @@ jobs:
       - name: Set up Python 3 libraries
         run: pip3 install setuptools wheel twine
 
-      - name: Validate Library
+      - name: Validate Library (py3)
         run: python3 py_sip_xnu.py
+
+      - name: Validate Library (py2)
+        run: python2 py_sip_xnu.py
 
       - name: Validate setup.py
         run: python3 setup.py check -m -s
