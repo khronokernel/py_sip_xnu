@@ -19,7 +19,7 @@ jobs:
           python-version: 3.6
 
       - name: Set up Python 3 libraries
-        run: pip3 install setuptools wheel twine
+        run: pip3 install setuptools wheel twine pylint
 
       - name: Validate Library (py3)
         run: python3 py_sip_xnu.py
@@ -38,6 +38,9 @@ jobs:
 
       - name: Validate twine
         run: twine check dist/*
+
+      - name: Validate PEP8
+        run: pylint py_sip_xnu.py
 
       - name: Upload Wheel Package
         uses: actions/upload-artifact@v2

@@ -23,35 +23,43 @@ System Integrity Protection, generally abbreviated as SIP, is a security feature
 
 Source for SIP configuration can be found in Apple's [csr.h](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/bsd/sys/csr.h), and parsing logic from [csr.c](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/libsyscall/wrappers/csr.c).
 
-## Usage
 
-Installation:
+## Installation
+
+pip-based:
+```sh
+pip3 install py_sip_xnu
+```
+
+Manual:
 ```sh
 python3 setup.py install
 ```
+
+## Usage
 
 Invocation:
 ```python
 import py_sip_xnu
 
-sip_config = py_sip_xnu.sip_xnu.get_sip_config()
+sip_config = py_sip_xnu.SipXnu.get_sip_config()
 
 '''
 sip_config = {
     'value': 0,
     'breakdown': {
-        'CSR_ALLOW_UNTRUSTED_KEXTS': False,
-        'CSR_ALLOW_UNRESTRICTED_FS': False,
-        'CSR_ALLOW_TASK_FOR_PID': False,
-        'CSR_ALLOW_KERNEL_DEBUGGER': False,
-        'CSR_ALLOW_APPLE_INTERNAL': False,
-        'CSR_ALLOW_UNRESTRICTED_DTRACE': False,
-        'CSR_ALLOW_UNRESTRICTED_NVRAM': False,
-        'CSR_ALLOW_DEVICE_CONFIGURATION': False,
-        'CSR_ALLOW_ANY_RECOVERY_OS': False,
-        'CSR_ALLOW_UNAPPROVED_KEXTS': False,
-        'CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE': False,
-        'CSR_ALLOW_UNAUTHENTICATED_ROOT': False
+        'csr_allow_untrusted_kexts': False,
+        'csr_allow_unrestricted_fs': False,
+        'csr_allow_task_for_pid': False,
+        'csr_allow_kernel_debugger': False,
+        'csr_allow_apple_internal': False,
+        'csr_allow_unrestricted_dtrace': False,
+        'csr_allow_unrestricted_nvram': False,
+        'csr_allow_device_configuration': False,
+        'csr_allow_any_recovery_os': False,
+        'csr_allow_unapproved_kexts': False,
+        'csr_allow_executable_policy_override': False,
+        'csr_allow_unauthenticated_root': False
     },
     'can_edit_root': False,
     'can_write_nvram': False,

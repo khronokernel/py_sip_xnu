@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pylint: disable=consider-using-f-string
 
 '''
     This module is used to detect XNU's current SIP status using direct
@@ -17,21 +18,18 @@
 from ctypes import CDLL, c_uint, byref
 import platform
 
-__version__ = "1.0.0"
-__all__ = ["get_sip_status"]
+__version__ = "1.0.2"
 
 SIP_XNU_LIBRARY_NAME = "sip_xnu"
 SIP_XNU_SHOULD_DEBUG = False
 
 
-def __set_debug_mode(state):
-    global SIP_XNU_SHOULD_DEBUG
-    SIP_XNU_SHOULD_DEBUG = state
+class SipXnu: # pylint: disable=too-many-instance-attributes, too-few-public-methods
+    '''
+        This class is used to detect XNU's current SIP status
+    '''
 
-
-class sip_xnu:
-
-    class __XNU_OS_VERSION():
+    class _XnuOsVersion(): # pylint: disable=too-few-public-methods
         OS_CHEETAH = 4
         OS_PUMA = 5
         OS_JAGUAR = 6
@@ -52,7 +50,7 @@ class sip_xnu:
         OS_MONTEREY = 21
         OS_VENTURA = 22
 
-    class __XNU_SIP_BITMASK():
+    class _XnuSipBitmask(): # pylint: disable=too-few-public-methods
         CSR_ALLOW_UNTRUSTED_KEXTS = 0x1
         CSR_ALLOW_UNRESTRICTED_FS = 0x2
         CSR_ALLOW_TASK_FOR_PID = 0x4
@@ -66,26 +64,26 @@ class sip_xnu:
         CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE = 0x400
         CSR_ALLOW_UNAUTHENTICATED_ROOT = 0x800
 
-    class __XNU_SIP_STATUS():
+    class _XnuSipStatus():  # pylint: disable=too-many-instance-attributes # pylint: disable=too-few-public-methods
         def __init__(
                 self,
                 csr_dict):
-            self.CSR_ALLOW_UNTRUSTED_KEXTS = csr_dict["CSR_ALLOW_UNTRUSTED_KEXTS"]
-            self.CSR_ALLOW_UNRESTRICTED_FS = csr_dict["CSR_ALLOW_UNRESTRICTED_FS"]
-            self.CSR_ALLOW_TASK_FOR_PID = csr_dict["CSR_ALLOW_TASK_FOR_PID"]
-            self.CSR_ALLOW_KERNEL_DEBUGGER = csr_dict["CSR_ALLOW_KERNEL_DEBUGGER"]
-            self.CSR_ALLOW_APPLE_INTERNAL = csr_dict["CSR_ALLOW_APPLE_INTERNAL"]
-            self.CSR_ALLOW_UNRESTRICTED_DTRACE = csr_dict["CSR_ALLOW_UNRESTRICTED_DTRACE"]
-            self.CSR_ALLOW_UNRESTRICTED_NVRAM = csr_dict["CSR_ALLOW_UNRESTRICTED_NVRAM"]
-            self.CSR_ALLOW_DEVICE_CONFIGURATION = csr_dict["CSR_ALLOW_DEVICE_CONFIGURATION"]
-            self.CSR_ALLOW_ANY_RECOVERY_OS = csr_dict["CSR_ALLOW_ANY_RECOVERY_OS"]
-            self.CSR_ALLOW_UNAPPROVED_KEXTS = csr_dict["CSR_ALLOW_UNAPPROVED_KEXTS"]
-            self.CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE = csr_dict["CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE"]
-            self.CSR_ALLOW_UNAUTHENTICATED_ROOT = csr_dict["CSR_ALLOW_UNAUTHENTICATED_ROOT"]
+            self.csr_allow_untrusted_kexts = csr_dict["CSR_ALLOW_UNTRUSTED_KEXTS"]
+            self.csr_allow_unrestricted_fs = csr_dict["CSR_ALLOW_UNRESTRICTED_FS"]
+            self.csr_allow_task_for_pid = csr_dict["CSR_ALLOW_TASK_FOR_PID"]
+            self.csr_allow_kernel_debugger = csr_dict["CSR_ALLOW_KERNEL_DEBUGGER"]
+            self.csr_allow_apple_internal = csr_dict["CSR_ALLOW_APPLE_INTERNAL"]
+            self.csr_allow_unrestricted_dtrace = csr_dict["CSR_ALLOW_UNRESTRICTED_DTRACE"]
+            self.csr_allow_unrestricted_nvram = csr_dict["CSR_ALLOW_UNRESTRICTED_NVRAM"]
+            self.csr_allow_device_configuration = csr_dict["CSR_ALLOW_DEVICE_CONFIGURATION"]
+            self.csr_allow_any_recovery_os = csr_dict["CSR_ALLOW_ANY_RECOVERY_OS"]
+            self.csr_allow_unapproved_kexts = csr_dict["CSR_ALLOW_UNAPPROVED_KEXTS"]
+            self.csr_allow_executable_policy_override = csr_dict[
+                "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE"]
+            self.csr_allow_unauthenticated_root = csr_dict["CSR_ALLOW_UNAUTHENTICATED_ROOT"]
 
-
-    class __SIP_STATUS:
-        def __init__(
+    class _SipStatus: # pylint: disable=too-many-instance-attributes # pylint: disable=too-few-public-methods
+        def __init__(  # pylint: disable=too-many-arguments
                 self,
                 value,
                 breakdown,
@@ -98,15 +96,17 @@ class sip_xnu:
             self.can_write_nvram = can_write_nvram
             self.can_load_arbitrary_kexts = can_load_arbitrary_kexts
 
-    def __init__(self):
-        self.XNU_MAJOR = 0
-        self.XNU_MINOR = 0
-        self.XNU_PATCH = 0
-        self.SIP_STATUS = 0
+    def __init__(self, debug=False):
+        self.xnu_major = 0
+        self.xnu_minor = 0
+        self.xnu_patch = 0
+        self.sip_status = 0
 
-        self.LIB_SYSTEM_PATH = "/usr/lib/libSystem.dylib"
+        self.debug = debug
 
-        self.SIP_DICT = {
+        self.lib_system_path = "/usr/lib/libSystem.dylib"
+
+        self.sip_dict = {
             "CSR_ALLOW_UNTRUSTED_KEXTS": 0,
             "CSR_ALLOW_UNRESTRICTED_FS": 0,
             "CSR_ALLOW_TASK_FOR_PID": 0,
@@ -124,13 +124,13 @@ class sip_xnu:
         self.__is_darwin()
         self.__detect_xnu_version()
 
-        self.SIP_STATUS = self.__detect_sip_status()
+        self.sip_status = self.__detect_sip_status()
 
         self.__update_sip_dict()
 
-        self.SIP_OBJECT = self.__SIP_STATUS(
-            value=self.SIP_STATUS,
-            breakdown=self.__XNU_SIP_STATUS(self.SIP_DICT),
+        self.sip_object = self._SipStatus(
+            value=self.sip_status,
+            breakdown=self._XnuSipStatus(self.sip_dict),
             can_edit_root=self.__sip_can_edit_root(),
             can_write_nvram=self.__sip_can_write_nvram(),
             can_load_arbitrary_kexts=self.__sip_can_load_arbitrary_kexts()
@@ -145,21 +145,21 @@ class sip_xnu:
         '''
 
         self.__debug_printing("Returning SIP status:")
-        self.__debug_printing("   Value: %s" % self.SIP_OBJECT.value)
+        self.__debug_printing("   Value: %s" % self.sip_object.value)
         self.__debug_printing("   Breakdown:")
-        for key, value in self.SIP_OBJECT.breakdown.__dict__.items():
+        for key, value in self.sip_object.breakdown.__dict__.items():
             self.__debug_printing("      %s: %s" % (key, value))
         self.__debug_printing(
             "   Can edit root: %s" %
-            self.SIP_OBJECT.can_edit_root)
+            self.sip_object.can_edit_root)
         self.__debug_printing(
             "   Can write NVRAM: %s" %
-            self.SIP_OBJECT.can_write_nvram)
+            self.sip_object.can_write_nvram)
         self.__debug_printing(
             "   Can load arbitrary kexts: %s" %
-            self.SIP_OBJECT.can_load_arbitrary_kexts)
+            self.sip_object.can_load_arbitrary_kexts)
 
-        return self.SIP_OBJECT
+        return self.sip_object
 
     def __debug_printing(self, message):
         '''
@@ -172,7 +172,7 @@ class sip_xnu:
             [SIP_XNU_LIBRARY_NAME][TIME] MESSAGE
         '''
 
-        if SIP_XNU_SHOULD_DEBUG:
+        if self.debug:
             print(
                 "[%s] %s" %
                 (SIP_XNU_LIBRARY_NAME,
@@ -199,12 +199,12 @@ class sip_xnu:
         xnu_version = platform.release()
         xnu_version = xnu_version.split(".")
 
-        self.XNU_MAJOR = int(xnu_version[0])
-        self.XNU_MINOR = int(xnu_version[1])
-        self.XNU_PATCH = int(xnu_version[2])
+        self.xnu_major = int(xnu_version[0])
+        self.xnu_minor = int(xnu_version[1])
+        self.xnu_patch = int(xnu_version[2])
 
         self.__debug_printing("XNU version: %d.%d.%d" %
-                              (self.XNU_MAJOR, self.XNU_MINOR, self.XNU_PATCH))
+                              (self.xnu_major, self.xnu_minor, self.xnu_patch))
 
     def __detect_sip_status(self):
         '''
@@ -217,11 +217,11 @@ class sip_xnu:
             If OS detected is older than 10.11, returns max int value
         '''
 
-        if self.XNU_MAJOR < self.__XNU_OS_VERSION.OS_EL_CAPITAN:
+        if self.xnu_major < self._XnuOsVersion.OS_EL_CAPITAN:
             # Assume unrestricted
             return 65535
 
-        libsys = CDLL(self.LIB_SYSTEM_PATH)
+        libsys = CDLL(self.lib_system_path)
         result = c_uint(0)
         error = libsys.csr_get_active_config(byref(result))
 
@@ -242,11 +242,11 @@ class sip_xnu:
             bool: True if SIP allows root filesystem to be edited
         '''
 
-        if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNRESTRICTED_FS:
-            if self.XNU_MAJOR < self.__XNU_OS_VERSION.OS_BIG_SUR:
+        if self.sip_status & self._XnuSipBitmask.CSR_ALLOW_UNRESTRICTED_FS:
+            if self.xnu_major < self._XnuOsVersion.OS_BIG_SUR:
                 return True
 
-            if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNAUTHENTICATED_ROOT:
+            if self.sip_status & self._XnuSipBitmask.CSR_ALLOW_UNAUTHENTICATED_ROOT:
                 return True
 
         return False
@@ -259,7 +259,7 @@ class sip_xnu:
             bool: True if SIP allows arbitrary kexts to be loaded
         '''
 
-        if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNTRUSTED_KEXTS:
+        if self.sip_status & self._XnuSipBitmask.CSR_ALLOW_UNTRUSTED_KEXTS:
             return True
 
         return False
@@ -272,7 +272,7 @@ class sip_xnu:
             bool: True if SIP allows NVRAM to be written
         '''
 
-        if self.SIP_STATUS & self.__XNU_SIP_BITMASK.CSR_ALLOW_UNRESTRICTED_NVRAM:
+        if self.sip_status & self._XnuSipBitmask.CSR_ALLOW_UNRESTRICTED_NVRAM:
             return True
 
         return False
@@ -282,15 +282,14 @@ class sip_xnu:
         Updates SIP_DICT with new SIP status
         '''
 
-        for key, value in self.SIP_DICT.items():
-            for sip_key, sip_value in self.__XNU_SIP_BITMASK.__dict__.items():
+        for key, value in self.sip_dict.items(): # pylint: disable=unused-variable
+            for sip_key, sip_value in self._XnuSipBitmask.__dict__.items():
                 if sip_key == key:
-                    if self.SIP_STATUS & sip_value:
-                        self.SIP_DICT[key] = True
+                    if self.sip_status & sip_value:
+                        self.sip_dict[key] = True
                     else:
-                        self.SIP_DICT[key] = False
+                        self.sip_dict[key] = False
 
 
 if __name__ == "__main__":
-    __set_debug_mode(True)
-    sip_xnu().get_sip_status()
+    SipXnu(debug=True).get_sip_status()

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='py_sip_xnu',
-    version='1.0.0',
+    version='1.0.2',
     author='Mykola Grymalyuk',
     author_email='khronokernel@icloud.com',
     license='BSD 3-Clause License',
