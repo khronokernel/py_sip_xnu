@@ -4,7 +4,7 @@ Python module for parsing macOS's SIP configuration.
 
 Library returns a SIP object with the following properties:
 ```
-value                    - int  - raw value of SIP configuration (integer)
+value                    - int  - raw value of SIP configuration
 breakdown                - dict - dictionary holding each SIP key and its value
 can_edit_root            - bool - whether SIP allows editing of protected files
 can_write_nvram          - bool - whether SIP allows writing to NVRAM
@@ -12,6 +12,14 @@ can_load_arbitrary_kexts - bool - whether SIP allows loading of arbitrary kexts
 ```
 
 If module accessed under Yosemite or earlier, `sip_xnu` will treat SIP as disabled.
+
+Project currently synced against macOS 13.0 (XNU 8792.41.9)
+
+## Background
+
+System Integrity Protection, generally abbreviated as SIP, is a security feature introduced in OS X El Capitan. Primary purpose of this setting was to control access to sensitive operations such as kernel extension loading, protected file write, task tracking, etc. SIP is part of the XNU kernel, and is a cumulation of several kernel flags into the CSR bitmask seen as SIP configuration.
+
+Source for SIP configuration can be found in Apple's [csr.h](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/bsd/sys/csr.h), and parsing logic from [csr.c](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/libsyscall/wrappers/csr.c).
 
 ## Usage
 
