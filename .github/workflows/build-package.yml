@@ -10,6 +10,8 @@ jobs:
   build:
     name: Build Python Package
     runs-on: macos-latest
+    env:
+      branch: ${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
 
@@ -45,7 +47,16 @@ jobs:
       - name: Upload Wheel Package
         uses: actions/upload-artifact@v2
         with:
-          name: dist
-          path: dist
+          name: py_sip_xnu.whl
+          path: dist/*.whl
+
+      - name: Upload Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/*
+          tag: ${{ github.ref }}
+          file_glob: true
 
 
