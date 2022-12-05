@@ -33,7 +33,7 @@ jobs:
         run: python3 setup.py check -m -s
 
       - name: Build Package
-        run: python3 setup.py bdist_wheel --universal
+        run: python3 -m build --wheel
 
       - name: Test Package
         run: python3 setup.py test

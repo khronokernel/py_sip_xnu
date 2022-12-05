@@ -2,3 +2,4 @@
 /py_sip_xnu.egg-info
 /dist
 __pycache__
+build

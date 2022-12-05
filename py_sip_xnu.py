@@ -18,7 +18,7 @@
 from ctypes import CDLL, c_uint, byref
 import platform
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 SIP_XNU_LIBRARY_NAME = "sip_xnu"
 SIP_XNU_SHOULD_DEBUG = False
