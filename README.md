@@ -4,11 +4,11 @@ Python module for querying SIP status on XNU-based systems (primarily macOS).
 
 Library returns a SIP object with the following properties:
 ```
-value                    - int  - raw value of SIP configuration
-breakdown                - dict - dictionary holding each SIP key and its value
-can_edit_root            - bool - whether SIP allows editing of protected files
-can_write_nvram          - bool - whether SIP allows writing to NVRAM
-can_load_arbitrary_kexts - bool - whether SIP allows loading of arbitrary kexts
+value                    - int    - raw value of SIP configuration
+breakdown                - object - holds each SIP key and its value
+can_edit_root            - bool   - whether SIP allows editing of protected files
+can_write_nvram          - bool   - whether SIP allows writing to NVRAM
+can_load_arbitrary_kexts - bool   - whether SIP allows loading of arbitrary kexts
 ```
 
 If module accessed under Yosemite or earlier, `sip_xnu` will treat SIP as disabled.

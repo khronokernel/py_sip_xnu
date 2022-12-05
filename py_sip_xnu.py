@@ -66,6 +66,24 @@ class sip_xnu:
         CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE = 0x400
         CSR_ALLOW_UNAUTHENTICATED_ROOT = 0x800
 
+    class __XNU_SIP_STATUS():
+        def __init__(
+                self,
+                csr_dict):
+            self.CSR_ALLOW_UNTRUSTED_KEXTS = csr_dict["CSR_ALLOW_UNTRUSTED_KEXTS"]
+            self.CSR_ALLOW_UNRESTRICTED_FS = csr_dict["CSR_ALLOW_UNRESTRICTED_FS"]
+            self.CSR_ALLOW_TASK_FOR_PID = csr_dict["CSR_ALLOW_TASK_FOR_PID"]
+            self.CSR_ALLOW_KERNEL_DEBUGGER = csr_dict["CSR_ALLOW_KERNEL_DEBUGGER"]
+            self.CSR_ALLOW_APPLE_INTERNAL = csr_dict["CSR_ALLOW_APPLE_INTERNAL"]
+            self.CSR_ALLOW_UNRESTRICTED_DTRACE = csr_dict["CSR_ALLOW_UNRESTRICTED_DTRACE"]
+            self.CSR_ALLOW_UNRESTRICTED_NVRAM = csr_dict["CSR_ALLOW_UNRESTRICTED_NVRAM"]
+            self.CSR_ALLOW_DEVICE_CONFIGURATION = csr_dict["CSR_ALLOW_DEVICE_CONFIGURATION"]
+            self.CSR_ALLOW_ANY_RECOVERY_OS = csr_dict["CSR_ALLOW_ANY_RECOVERY_OS"]
+            self.CSR_ALLOW_UNAPPROVED_KEXTS = csr_dict["CSR_ALLOW_UNAPPROVED_KEXTS"]
+            self.CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE = csr_dict["CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE"]
+            self.CSR_ALLOW_UNAUTHENTICATED_ROOT = csr_dict["CSR_ALLOW_UNAUTHENTICATED_ROOT"]
+
+
     class __SIP_STATUS:
         def __init__(
                 self,
@@ -112,7 +130,7 @@ class sip_xnu:
 
         self.SIP_OBJECT = self.__SIP_STATUS(
             value=self.SIP_STATUS,
-            breakdown=self.SIP_DICT,
+            breakdown=self.__XNU_SIP_STATUS(self.SIP_DICT),
             can_edit_root=self.__sip_can_edit_root(),
             can_write_nvram=self.__sip_can_write_nvram(),
             can_load_arbitrary_kexts=self.__sip_can_load_arbitrary_kexts()
@@ -129,7 +147,7 @@ class sip_xnu:
         self.__debug_printing("Returning SIP status:")
         self.__debug_printing("   Value: %s" % self.SIP_OBJECT.value)
         self.__debug_printing("   Breakdown:")
-        for key, value in self.SIP_OBJECT.breakdown.items():
+        for key, value in self.SIP_OBJECT.breakdown.__dict__.items():
             self.__debug_printing("      %s: %s" % (key, value))
         self.__debug_printing(
             "   Can edit root: %s" %
@@ -261,7 +279,7 @@ class sip_xnu:
 
     def __update_sip_dict(self):
         '''
-        Updates SIP_BREAKDOWN with new SIP status
+        Updates SIP_DICT with new SIP status
         '''
 
         for key, value in self.SIP_DICT.items():
