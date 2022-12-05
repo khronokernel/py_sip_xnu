@@ -42,7 +42,7 @@ Invocation:
 ```python
 import py_sip_xnu
 
-sip_config = py_sip_xnu.SipXnu.get_sip_config()
+sip_config = py_sip_xnu.SipXnu().get_sip_status()
 
 '''
 sip_config = {

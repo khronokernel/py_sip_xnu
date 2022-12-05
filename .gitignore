@@ -1,3 +1,4 @@
 .DS_Store
 /py_sip_xnu.egg-info
 /dist
+__pycache__
