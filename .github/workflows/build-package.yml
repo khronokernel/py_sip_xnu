@@ -13,15 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3 libraries
-        run: pip3 install setuptools wheel
+        run: pip3 install setuptools wheel twine
 
       - name: Validate Library
         run: python3 py_sip_xnu.py
 
+      - name: Validate setup.py
+        run: python3 setup.py check -m -s
+
       - name: Build Package
         run: python3 setup.py bdist_wheel --universal
+
       - name: Test Package
         run: python3 setup.py test
+
+      - name: Validate twine
+        run: twine check dist/*
 
       - name: Upload Wheel Package
         uses: actions/upload-artifact@v2

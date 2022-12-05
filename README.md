@@ -1,6 +1,6 @@
 # py_sip_xnu
 
-Python module for parsing macOS's SIP configuration.
+Python module for querying SIP status on XNU-based systems (primarily macOS).
 
 Library returns a SIP object with the following properties:
 ```
