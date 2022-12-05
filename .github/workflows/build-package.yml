@@ -9,9 +9,12 @@ on:
 jobs:
   build:
     name: Build Python Package
-    runs-on: macos_latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Validate Library
+        run: python3 py_sip_xnu.py
+
       - name: Build Package
         run: python3 setup.py bdist_wheel --universal
       - name: Test Package
