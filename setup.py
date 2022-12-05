@@ -11,4 +11,5 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(exclude=('tests', 'docs')),
     url='https://github.com/khronokernel/py_sip_xnu',
+    python_requires='>=2.7',
 )

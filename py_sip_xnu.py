@@ -15,24 +15,23 @@
 '''
 
 from ctypes import CDLL, c_uint, byref
-import enum
 import platform
 
 __version__ = "1.0.0"
 __all__ = ["get_sip_status"]
 
-SIP_XNU_LIBRARY_NAME: str = "sip_xnu"
-SIP_XNU_SHOULD_DEBUG: bool = False
+SIP_XNU_LIBRARY_NAME = "sip_xnu"
+SIP_XNU_SHOULD_DEBUG = False
 
 
-def __set_debug_mode(state: bool):
+def __set_debug_mode(state):
     global SIP_XNU_SHOULD_DEBUG
     SIP_XNU_SHOULD_DEBUG = state
 
 
 class sip_xnu:
 
-    class __XNU_OS_VERSION(enum.IntEnum):
+    class __XNU_OS_VERSION():
         OS_CHEETAH = 4
         OS_PUMA = 5
         OS_JAGUAR = 6
@@ -53,7 +52,7 @@ class sip_xnu:
         OS_MONTEREY = 21
         OS_VENTURA = 22
 
-    class __XNU_SIP_STATUS(enum.IntEnum):
+    class __XNU_SIP_STATUS():
         CSR_ALLOW_UNTRUSTED_KEXTS = 0x1
         CSR_ALLOW_UNRESTRICTED_FS = 0x2
         CSR_ALLOW_TASK_FOR_PID = 0x4
@@ -70,11 +69,11 @@ class sip_xnu:
     class __SIP_STATUS:
         def __init__(
                 self,
-                value: int,
-                breakdown: dict,
-                can_edit_root: bool,
-                can_write_nvram: bool,
-                can_load_arbitrary_kexts: bool):
+                value,
+                breakdown,
+                can_edit_root,
+                can_write_nvram,
+                can_load_arbitrary_kexts):
             self.value = value
             self.breakdown = breakdown
             self.can_edit_root = can_edit_root
@@ -82,14 +81,14 @@ class sip_xnu:
             self.can_load_arbitrary_kexts = can_load_arbitrary_kexts
 
     def __init__(self):
-        self.XNU_MAJOR: int = 0
-        self.XNU_MINOR: int = 0
-        self.XNU_PATCH: int = 0
-        self.SIP_STATUS: int = 0
+        self.XNU_MAJOR = 0
+        self.XNU_MINOR = 0
+        self.XNU_PATCH = 0
+        self.SIP_STATUS = 0
 
-        self.LIB_SYSTEM_PATH: str = "/usr/lib/libSystem.dylib"
+        self.LIB_SYSTEM_PATH = "/usr/lib/libSystem.dylib"
 
-        self.SIP_DICT: dict = {
+        self.SIP_DICT = {
             "CSR_ALLOW_UNTRUSTED_KEXTS": 0,
             "CSR_ALLOW_UNRESTRICTED_FS": 0,
             "CSR_ALLOW_TASK_FOR_PID": 0,
@@ -144,7 +143,7 @@ class sip_xnu:
 
         return self.SIP_OBJECT
 
-    def __debug_printing(self, message: str):
+    def __debug_printing(self, message):
         '''
         Prints the message if the debug flag is set
 
@@ -161,7 +160,7 @@ class sip_xnu:
                 (SIP_XNU_LIBRARY_NAME,
                  message))
 
-    def __debug_exception(self, message: str):
+    def __debug_exception(self, message):
         raise Exception(
             "[%s] %s" %
             (SIP_XNU_LIBRARY_NAME, message))
@@ -179,7 +178,7 @@ class sip_xnu:
         Detects the XNU version of the current system
         '''
 
-        xnu_version: str = platform.release()
+        xnu_version = platform.release()
         xnu_version = xnu_version.split(".")
 
         self.XNU_MAJOR = int(xnu_version[0])
@@ -204,9 +203,9 @@ class sip_xnu:
             # Assume unrestricted
             return 65535
 
-        libsys: CDLL = CDLL(self.LIB_SYSTEM_PATH)
-        result: c_uint = c_uint(0)
-        error: int = libsys.csr_get_active_config(byref(result))
+        libsys = CDLL(self.LIB_SYSTEM_PATH)
+        result = c_uint(0)
+        error = libsys.csr_get_active_config(byref(result))
 
         if error != 0:
             self.__debug_exception(
@@ -262,7 +261,7 @@ class sip_xnu:
 
     def __update_sip_dict(self):
         '''
-        Updates the SIP dictionary with new SIP status
+        Updates SIP_BREAKDOWN with new SIP status
         '''
 
         for key, value in self.SIP_DICT.items():
