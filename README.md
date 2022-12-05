@@ -23,6 +23,12 @@ Source for SIP configuration can be found in Apple's [csr.h](https://github.com/
 
 ## Usage
 
+Installation:
+```sh
+python3 setup.py install
+```
+
+Invocation:
 ```python
 import py_sip_xnu
 
