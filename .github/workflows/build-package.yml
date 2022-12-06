@@ -23,6 +23,14 @@ jobs:
       - name: Set up Python 3 libraries
         run: pip3 install setuptools wheel twine pylint build
 
+      - name: Set Python 2.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 2.7
+
+      - name: Set up Python 2 libraries
+        run: pip2 install setuptools wheel twine pylint build
+
       - name: Validate Library (py3)
         run: python3 py_sip_xnu.py
 
@@ -32,11 +40,17 @@ jobs:
       - name: Validate setup.py
         run: python3 setup.py check -m -s
 
-      - name: Build Package
+      - name: Build Package (py3)
         run: python3 -m build --wheel
 
-      - name: Test Package
+      - name: Test Package (py3)
         run: python3 setup.py test
+
+      - name: Build Package (py2)
+        run: python2 -m build --wheel
+
+      - name: Test Package (py2)
+        run: python2 setup.py test
 
       - name: Validate twine
         run: twine check dist/*
