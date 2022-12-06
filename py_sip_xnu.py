@@ -178,7 +178,7 @@ class SipXnu: # pylint: disable=too-many-instance-attributes, too-few-public-met
                 (SIP_XNU_LIBRARY_NAME,
                  message))
 
-    def __debug_exception(self, message): # pylint: disable=no-self-use
+    def __debug_exception(self, message):
         raise Exception(
             "[%s] %s" %
             (SIP_XNU_LIBRARY_NAME, message))
