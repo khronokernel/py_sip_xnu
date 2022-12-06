@@ -1,7 +1,7 @@
 # py_sip_xnu
 
 Python module for querying SIP status on XNU-based systems (primarily macOS) through exposed kernel APIs.
-No reliance on `csrutil` or NVRAM properties, allowing for more accurate and reliable results.
+No reliance on `csrutil` or NVRAM properties, allowing for more accurate and reliable results. Supporting both Intel and Apple Silicon systems.
 
 Library returns a SIP object with the following properties:
 ```
@@ -14,7 +14,7 @@ can_load_arbitrary_kexts - bool   - whether SIP allows loading of arbitrary kext
 
 If module accessed under Yosemite or earlier, `sip_xnu` will treat SIP as disabled.
 
-Project currently synced against macOS 13.0 (XNU 8792.41.9). Based off of [pudquick's concept](https://gist.github.com/pudquick/8b320be960e1654b908b10346272326b).
+Project currently synced against macOS 13.0 ([XNU 8792.41.9](https://github.com/apple-oss-distributions/xnu/tree/xnu-8792.41.9)). Based off of [pudquick's concept](https://gist.github.com/pudquick/8b320be960e1654b908b10346272326b).
 
 Python validated against 2.7 and 3.9.
 
