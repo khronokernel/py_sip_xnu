@@ -21,7 +21,6 @@ import platform
 __version__ = "1.0.4"
 
 SIP_XNU_LIBRARY_NAME = "sip_xnu"
-SIP_XNU_SHOULD_DEBUG = False
 
 
 class SipXnu: # pylint: disable=too-many-instance-attributes, too-few-public-methods
