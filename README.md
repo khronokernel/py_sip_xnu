@@ -1,6 +1,7 @@
 # py_sip_xnu
 
-Python module for querying SIP status on XNU-based systems (primarily macOS).
+Python module for querying SIP status on XNU-based systems (primarily macOS) through exposed kernel APIs.
+No reliance on `csrutil` or NVRAM properties, allowing for more accurate and reliable results.
 
 Library returns a SIP object with the following properties:
 ```
@@ -19,7 +20,11 @@ Python validated against 2.7 and 3.9.
 
 ## Background
 
-System Integrity Protection, generally abbreviated as SIP, is a security feature introduced in OS X El Capitan. Primary purpose of this setting was to control access to sensitive operations such as kernel extension loading, protected file write, task tracking, etc. SIP is part of the XNU kernel, and is a cumulation of several kernel flags into the CSR bitmask seen as SIP configuration.
+[System Integrity Protection](https://support.apple.com/en-ca/HT204899), generally abbreviated as SIP, is a security feature introduced in OS X El Capitan. The primary purpose of this setting was to control access to sensitive operations such as kernel extension loading, protected file write, task tracking, etc. SIP is part of the XNU kernel, and is a cumulation of several kernel flags into the CSR bitmask seen as SIP configuration.
+
+The primary benefit of this library over manually invoking either `csrutil` or reading `nvram csr-active-config` is that we check with the kernel directly, and verify what macOS itself is using for SIP configuration. Contrast this with `nvram`, boot.efi and XNU can reject SIP bits such as 0x10 (AppleInternal) during runtime without changing the exposed NVRAM value.
+
+With `csrutil`, this tool obfuscates much of SIP into a simple on/off state, when in reality SIP is a complex bitmask. Many developers will simply check the output of `csrutil status` and assume SIP is either enabled or disabled, without properly probing specific bits for what the application may need. Using `sip_xnu` allows for better probing and allows users to lower less of SIP for overall better system security.
 
 Source for SIP configuration can be found in Apple's [csr.h](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/bsd/sys/csr.h), and parsing logic from [csr.c](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/libsyscall/wrappers/csr.c).
 
