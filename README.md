@@ -26,6 +26,8 @@ The primary benefit of this library over manually invoking either `csrutil` or r
 
 With `csrutil`, this tool obfuscates much of SIP into a simple on/off state, when in reality SIP is a complex bitmask. Many developers will simply check the output of `csrutil status` and assume SIP is either enabled or disabled, without properly probing specific bits for what the application may need. Using `sip_xnu` allows for better probing and allows users to lower less of SIP for overall better system security.
 
+* More information can be found here: [System Integrity Protection: The misunderstood setting](https://khronokernel.github.io/macos/2022/12/09/SIP.html)
+
 Source for SIP configuration can be found in Apple's [csr.h](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/bsd/sys/csr.h), and parsing logic from [csr.c](https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/libsyscall/wrappers/csr.c).
 
 
